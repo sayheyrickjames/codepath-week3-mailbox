@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import MessageUI
 
-class MailboxViewController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate, UIAlertViewDelegate {
+class MailboxViewController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate, UIAlertViewDelegate, MFMailComposeViewControllerDelegate {
     
     // all outlets
     @IBOutlet weak var feedImageView: UIImageView!
@@ -24,6 +25,10 @@ class MailboxViewController: UIViewController, UIScrollViewDelegate, UIGestureRe
     @IBOutlet weak var rescheduleImageView: UIImageView!
     @IBOutlet weak var listImageView: UIImageView!
     
+    @IBOutlet weak var navSegmentedControl: UISegmentedControl!
+    @IBOutlet weak var laterScrollView: UIScrollView!
+    @IBOutlet weak var archiveScrollView: UIScrollView!
+    
     
     // starting center points
     var originalMessageCenter: CGPoint!
@@ -33,6 +38,15 @@ class MailboxViewController: UIViewController, UIScrollViewDelegate, UIGestureRe
     var originalFeedCenter: CGPoint!
     var gutter: CGFloat!
     var originalContainerViewCenterX: CGFloat!
+    
+    
+    // colors
+    let blueColor = UIColor(red: 107/255, green: 190/255, blue: 219/255, alpha: 1)
+    let yellowColor = UIColor(red: 254/255, green: 202/255, blue: 22/255, alpha: 1)
+    let brownColor = UIColor(red: 206/255, green: 150/255, blue: 98/255, alpha: 1)
+    let greenColor = UIColor(red: 85/255, green: 213/255, blue: 80/255, alpha: 1)
+    let redColor = UIColor(red: 231/255, green: 61/255, blue: 14/255, alpha: 1)
+    let grayColor = UIColor(red: 178/255, green: 178/255, blue: 178/255, alpha: 1)
     
     
     override func viewDidLoad() {
@@ -266,6 +280,33 @@ class MailboxViewController: UIViewController, UIScrollViewDelegate, UIGestureRe
     }
     
     
+    @IBAction func didPressComposeButton(sender: AnyObject) {
+        
+        if MFMailComposeViewController.canSendMail(){
+            var composer = MFMailComposeViewController()
+            composer.mailComposeDelegate = self
+            composer.setToRecipients([""])
+            composer.navigationBar.tintColor = blueColor
+            presentViewController(composer, animated: true, completion: {
+                UIApplication.sharedApplication().setStatusBarStyle(.LightContent, animated: false)
+            })
+        }
+    }
+    
+    func mailComposeController(controller: MFMailComposeViewController!, didFinishWithResult result: MFMailComposeResult, error: NSError!) {
+        switch result.value{
+        case MFMailComposeResultCancelled.value: println("Mail cancelled")
+        case MFMailComposeResultSaved.value: println("Mail saved")
+        case MFMailComposeResultSent.value: println("Mail sent")
+        case MFMailComposeResultFailed.value: println("Failed to send mail: \(error.localizedDescription)")
+            
+        default:
+            break
+        }
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
     // edge pan gesture recognizer
     
     func onEdgePan(sender:UIScreenEdgePanGestureRecognizer) {
@@ -300,14 +341,100 @@ class MailboxViewController: UIViewController, UIScrollViewDelegate, UIGestureRe
         
     }
     
-    /*
-    // MARK: - Navigation
-    
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    // Get the new view controller using segue.destinationViewController.
-    // Pass the selected object to the new view controller.
+    @IBAction func tapNavSegmentedControl(sender: AnyObject) {
+        
+        if navSegmentedControl.selectedSegmentIndex == 0 {
+            
+            // later icon selected
+            
+            navSegmentedControl.tintColor = yellowColor
+            
+            self.laterScrollView.alpha = 1
+            
+            UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 0, options: nil, animations: { () -> Void in
+                self.scrollView.frame.origin.x = 320
+                }, completion: { (Bool) -> Void in
+                    self.scrollView.alpha = 0
+            })
+            
+            UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 0, options: nil, animations: { () -> Void in
+                self.archiveScrollView.frame.origin.x = 640
+                }, completion: { (Bool) -> Void in
+                    self.archiveScrollView.alpha = 0
+            })
+            
+            UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 0, options: nil, animations: { () -> Void in
+                self.laterScrollView.frame.origin.x = 0
+                }, completion: { (Bool) -> Void in
+                    self.laterScrollView.alpha = 1
+            })
+            
+            
+        } else if navSegmentedControl.selectedSegmentIndex == 1 {
+            
+            // mailbox icon selected
+            
+            navSegmentedControl.tintColor = blueColor
+            
+            self.scrollView.alpha = 1
+            
+            UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 0, options: nil, animations: { () -> Void in
+                self.scrollView.frame.origin.x = 0
+                }, completion: { (Bool) -> Void in
+                    self.scrollView.alpha = 1
+            })
+            
+            UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 0, options: nil, animations: { () -> Void in
+                self.archiveScrollView.frame.origin.x = 320
+                }, completion: { (Bool) -> Void in
+                    self.archiveScrollView.alpha = 0
+            })
+            
+            UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 0, options: nil, animations: { () -> Void in
+                self.laterScrollView.frame.origin.x = -320
+                }, completion: { (Bool) -> Void in
+                    self.laterScrollView.alpha = 0
+            })
+            
+            
+        } else {
+            
+            // archive icon selected
+            
+            navSegmentedControl.tintColor = greenColor
+            
+            archiveScrollView.alpha = 1
+            
+            UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 0, options: nil, animations: { () -> Void in
+                self.scrollView.frame.origin.x = -320
+                }, completion: { (Bool) -> Void in
+                    self.scrollView.alpha = 0
+            })
+            
+            UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 0, options: nil, animations: { () -> Void in
+                self.archiveScrollView.frame.origin.x = 0
+                }, completion: { (Bool) -> Void in
+                    self.archiveScrollView.alpha = 1
+            })
+            
+            UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 0, options: nil, animations: { () -> Void in
+                self.laterScrollView.frame.origin.x = -640
+                }, completion: { (Bool) -> Void in
+                    self.laterScrollView.alpha = 0
+            })
+            
+        }
     }
-    */
     
 }
+
+
+/*
+// MARK: - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+// Get the new view controller using segue.destinationViewController.
+// Pass the selected object to the new view controller.
+}
+*/
