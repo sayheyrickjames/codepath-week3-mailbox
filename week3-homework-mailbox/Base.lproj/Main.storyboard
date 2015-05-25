@@ -98,6 +98,7 @@
                                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="feed" id="Yx5-6h-X3Y">
                                                 <rect key="frame" x="0.0" y="165" width="320" height="1202"/>
                                                 <autoresizingMask key="autoresizingMask"/>
+                                                <gestureRecognizers/>
                                             </imageView>
                                         </subviews>
                                     </scrollView>

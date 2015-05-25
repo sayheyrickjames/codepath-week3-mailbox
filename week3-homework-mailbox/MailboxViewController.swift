@@ -285,7 +285,7 @@ class MailboxViewController: UIViewController, UIScrollViewDelegate, UIGestureRe
         if MFMailComposeViewController.canSendMail(){
             var composer = MFMailComposeViewController()
             composer.mailComposeDelegate = self
-            composer.setToRecipients([""])
+            composer.setToRecipients(["rchatas@icloud.com"])
             composer.navigationBar.tintColor = blueColor
             presentViewController(composer, animated: true, completion: {
                 UIApplication.sharedApplication().setStatusBarStyle(.LightContent, animated: false)
@@ -306,6 +306,25 @@ class MailboxViewController: UIViewController, UIScrollViewDelegate, UIGestureRe
         dismissViewControllerAnimated(true, completion: nil)
     }
     
+//    override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent)
+//    {
+//        if(event.subtype == UIEventSubtype.MotionShake)
+//        {
+//            //If the user has archived or deleted a message, bring up this alert
+//            if (self.feedImageView.frame == CGRect(x: 320, y: 0, width: 320, height: 1202))
+//            {
+//                //Alert declaration
+//                var alert = UIAlertController(title: "Undo last action?", message: "Are you sure you want to undo and move 1 item from Archive back into inbox?", preferredStyle: UIAlertControllerStyle.Alert)
+//                alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
+//                alert.addAction(UIAlertAction(title: "Undo", style: UIAlertActionStyle.Default, handler: {(alertAction) -> Void in
+//                    self.undismissMessage()
+//                }))
+//                //Show alert
+//                self.presentViewController(alert, animated: true, completion: nil)
+//            }
+//        }
+//    }
+//    
     
     // edge pan gesture recognizer
     
