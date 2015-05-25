@@ -33,6 +33,6 @@ On dragging the message right...
 - [x] Optional: Tapping the segmented control in the title should swipe views in from the left or right.
 - [x] Optional: Shake to undo.
 
-![mailbox-walkthrough](https://github.com/sayheyrickjames/codepath-week2-carousel/blob/master/carousel-walkthrough.gif?raw=true)
+![mailbox-walkthrough](https://github.com/sayheyrickjames/codepath-week3-mailbox/blob/master/mailbox-walkthrough.gif?raw=true)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
